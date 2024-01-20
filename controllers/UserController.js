@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const User = require('../models/User');
 const uploadImage = require('../services/uploadImage');
 const { body, validationResult } = require('express-validator');
+const { response } = require('express');
 require('dotenv').config();
 
 async function handleUpload(file) {
@@ -96,3 +97,45 @@ exports.decline_friend_request = asyncHandler(async (req, res, next) => {
     }
     res.status(200).send();
 });
+
+exports.update_pic = asyncHandler(async (req, res, next) => {
+    try {
+        const response = await uploadImage(req.body.image);
+        await User.findOneAndUpdate({ _id: req.params.id }, { $set: { profilePhoto: response } } );
+        res.status(200).send();
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(response.message);
+        return;
+    }
+
+    res.status(200).send();
+});
+
+exports.update_bio = [
+    body('text')
+        .trim()
+        .isLength({ max: 400 })
+        .withMessage('La bio no puede pasar las 400 letras'),
+
+    asyncHandler(async (req, res, next) => {
+        try {
+            const errors = validationResult(req).errors;
+            if (errors.length) {
+                console.error('err -->' + errors);
+                return res.status(401).json(errors);
+            }
+            await User.findByIdAndUpdate(
+                req.params.id,
+                {
+                    $set: { bio: req.body.text }
+                },
+                { upsert: true }
+            ).exec();
+            res.status(200).send();
+        } catch (err) {
+            console.error(err);
+            res.status(500).send();
+        }
+    })
+];
