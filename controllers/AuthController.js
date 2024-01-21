@@ -64,3 +64,43 @@ exports.sign_up = [
         }
     })
 ];
+
+exports.log_in = asyncHandler(async (req, res, next) => {
+    const data = await User.find({ username: req.body.username });
+    const user = data[0];
+
+    if (!user) {
+        return res.status(401).json({ msg: 'Usuario no encontrado' });
+    }
+
+    const match = await bcrypt.compare(req.body.password, user.password);
+    if (!match) {
+        return res.status(401).json({ msg: 'Contraseña incorrecta' });
+    }
+
+    const username = user.username;
+    const token = jwt.sign({ username }, process.env.SECRET_KEY, {
+        expiresIn: '2hr'
+    });
+    return res.status(200).json({
+        msg: 'Login exitoso',
+        token,
+        userId: user._id,
+    });
+});
+
+exports.guest_log_in = asyncHandler(async (req, res, next) => {
+    const user = await User.findOne({ username: 'Guest User' });
+    if (!user) {
+        return res.status(500).json({ msg: 'Guest login fallido' });
+    }
+    const username = user.username;
+    const token = jwt.sign({ username }, process.env.SECRET, {
+        expiresIn: '2hr'
+    });
+    return res.status(200).json({
+        msg: 'Login exitoso',
+        token,
+        userId: user._id,
+    });
+})
