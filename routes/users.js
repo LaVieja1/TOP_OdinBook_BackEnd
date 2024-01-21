@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/UserController');
-const JWT = require('../services/uploadImage');
-router.user(JWT.verify);
+const JWT = require('../services/verifyJWT');
+router.use(JWT.verify);
 
 router.get('/:id/suggested_friends', UserController.get_suggested_friends);
 
