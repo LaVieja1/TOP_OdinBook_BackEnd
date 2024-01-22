@@ -69,7 +69,7 @@ exports.accept_friend_request = asyncHandler(async (req, res, next) => {
     const userId = req.params.id;
     try {
         await Promise.all([
-            user.findOneAndUpdate(
+            User.findOneAndUpdate(
                 { _id: userId },
                 { $push: { friends: requestId }, $pull: { friendRequests: requestId } }
             ).exec(),
