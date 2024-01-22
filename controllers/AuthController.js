@@ -95,7 +95,7 @@ exports.guest_log_in = asyncHandler(async (req, res, next) => {
         return res.status(500).json({ msg: 'Guest login fallido' });
     }
     const username = user.username;
-    const token = jwt.sign({ username }, process.env.SECRET, {
+    const token = jwt.sign({ username }, process.env.SECRET_KEY, {
         expiresIn: '2hr'
     });
     return res.status(200).json({
