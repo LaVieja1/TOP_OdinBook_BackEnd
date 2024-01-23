@@ -10,7 +10,7 @@ router.get('/:id', UserController.get_user);
 
 router.get('/:id/friends', UserController.get_friends);
 
-router.get('/:id/friendrequests', UserController.create_friend_request);
+router.post('/:id/friendrequests', UserController.create_friend_request);
 
 router.post('/:id/profilepic', UserController.update_pic);
 
