@@ -19,14 +19,14 @@ exports.sign_up = [
         .trim()
         .custom((value) => {
             const passwordRegex =
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_=+[\]{}|;:'",.<>?/]).{8,}$/;
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
             if (passwordRegex.test(value)) {
                 return true;
             }
             return false;
         })
         .withMessage(
-            'La contraseña debe tener 8 caractéres minimo, una miníscula, una mayúscula, un numero y un simbolo'
+            'La contraseña debe tener 8 caractéres minimo, una miníscula, una mayúscula y un numero'
         )
         .escape(),
     body('confirm_password')
