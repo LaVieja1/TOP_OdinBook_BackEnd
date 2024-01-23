@@ -65,7 +65,7 @@ exports.create_friend_request = asyncHandler(async (req, res, next) => {
 });
 
 exports.accept_friend_request = asyncHandler(async (req, res, next) => {
-    const requestId = req.params.requestId;
+    const requestId = req.params.requestid;
     const userId = req.params.id;
     try {
         await Promise.all([
